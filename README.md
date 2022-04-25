@@ -18,14 +18,14 @@ A simple Processing tool to import SVG files and export URscript code to control
 ## TODO
 
 - add CP5 to build GUI
--- File select
--- Feature text
--- Approach height
--- Rapid speed input
--- Feed speed input
--- Accel input
--- Export filename
--- Export button
+  - File select
+  - Feature text
+  - Approach height
+  - Rapid speed input
+  - Feed speed input
+  - Accel input
+  - Export filename
+  - Export button
 - Build standalone App into `/dist` folder
 - turn the UR export syntax post-processor into a standalone library
 
