@@ -5,8 +5,8 @@ PrintWriter ur;
 RShape grp;
 RPoint[][] pointPaths;
 
-float rescale = 0.3521/1000; // scale factor from SVG unitless to meters
-float dispscale = rescale*1000; // display factor from meters to 1mm = 1 pixel
+float rescale = (25.4/72) / 1000; // scale factor from 72dpi to meters
+float dispscale = rescale * 1000; // display factor from meters to 1mm = 1 pixel
 boolean ignoringStyles = true;
 
 void setup(){
