@@ -47,8 +47,8 @@ void draw(){
     "  global accel_ms = 0.25\n" + // 0.25m/ss
     "  global blend_radius_m = 0.005\n" + // blend 5mm in corners to prevent stopping at each points
     "  global approach = 0.03\n" + // approach every segment at 3cm above the Feature plane
-    "  global tool1_Z = 0.01\n" + // approach every segment at 3cm above the Feature plane
-    "  global tool2_Z = 0.00\n" + // approach every segment at 3cm above the Feature plane
+    "  global tool1_Z = 0.00\n" + // RATEAU
+    "  global tool2_Z = 0.01\n" + // AIR COMPRESSEUR
     "  global feature = felting_plane\n"); // execute all movements relative to this Feature plane
   lineCount += 8;
 
