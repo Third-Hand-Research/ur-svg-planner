@@ -64,13 +64,19 @@ void draw(){
 
     boolean tool2 = i % 2 == 0 ? false : true;
     
+    
     if (pointPaths[i] != null) {
       beginShape();
       // set digital output 1 to HIGH if we need to turn on some device (solenoid, valve, servo..)
+      
+      String toolPosition;
+      
       if(tool2) {
         ur.println("  set_standard_digital_out(1,True)");
+        toolPosition = "-tool2_Z";
         stroke(255, 0, 0);
       } else {
+        toolPosition = "-tool1_Z";
         stroke(0);
       }
       // move above start of path
@@ -94,7 +100,7 @@ void draw(){
       // draw circle to indicate start position
       ellipse(pointPaths[i][pointPaths[i].length-1].x*dispscale, pointPaths[i][pointPaths[i].length-1].y*dispscale, 3, 3);
 
-      String toolPosition = tool2 ? "-tool2_Z" : "-tool1_Z";
+
 
       // loop through all points from path
       for(int j = 0; j<pointPaths[i].length-1; j++){
