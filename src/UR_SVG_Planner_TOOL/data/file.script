@@ -1,0 +1,26 @@
+def Print():
+  #set parameters
+  global rapid_ms = 0.25
+  global feed_ms = 0.01
+  global accel_ms = 0.25
+  global blend_radius_m = 0.005
+  global approach = 0.03
+  global tool1_Z = 0.01
+  global tool2_Z = 0.00
+  global feature = felting_plane
+
+  movel(pose_trans(feature, p[0,0,-0.1,0,0,0]), rapid_ms, accel_ms, 0, 0)
+  sleep(2)
+  movel(pose_trans(feature, p[0.41080973,0.40343666,-approach,0,0,0]), accel_ms, rapid_ms, 0, blend_radius_m)
+  movel(pose_trans(feature, p[0.41080973,0.40343666,-tool1_Z,0,0,0]), accel_ms, feed_ms, 0, blend_radius_m)
+  movel(pose_trans(feature, p[0.41080973,0.4649611,-tool1_Z,0,0,0]), accel_ms, feed_ms, 0, blend_radius_m)
+  movel(pose_trans(feature, p[0.41080973,0.4649611,-approach,0,0,0]), accel_ms, rapid_ms, 0, blend_radius_m)
+  set_standard_digital_out(1,True)
+  movel(pose_trans(feature, p[0.5616928,0.40343666,-approach,0,0,0]), accel_ms, rapid_ms, 0, blend_radius_m)
+  movel(pose_trans(feature, p[0.5616928,0.40343666,-tool2_Z,0,0,0]), accel_ms, feed_ms, 0, blend_radius_m)
+  movel(pose_trans(feature, p[0.5616928,0.47194612,-tool2_Z,0,0,0]), accel_ms, feed_ms, 0, blend_radius_m)
+  set_standard_digital_out(1,False)
+  movel(pose_trans(feature, p[0.5616928,0.47194612,-approach,0,0,0]), accel_ms, rapid_ms, 0, blend_radius_m)
+  movel(pose_trans(feature, p[0,0,-0.1,0,0,0]), accel_ms, rapid_ms, 0, 0)
+end
+Print()
