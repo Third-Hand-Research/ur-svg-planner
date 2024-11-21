@@ -1,28 +1,74 @@
 import geomerative.*;
 
-PrintWriter ur;
+/* --------- CONFIG --------- */
 
+float minX = 0.0; // minimum X is 0m
+float maxX = 1.0; // maximum X is 0.5m
+float minY = 0.0; // minimum Y is 0m
+float maxY = 1.0; // maximum Y is 0.5m
+
+boolean homeAtStart = true; // send the tool to the home position on program start, useful to verify tool alignment against a reference
+boolean homeAtEnd = true; // send the tool to the home position on program end
+boolean homeAfterEveryPath = false; // go home after each path
+float homeX = 0.0; // X home coordinate
+float homeY = 0.0; // Y home coordinate
+float homeZ = -0.1; // Z home coordinate
+
+boolean dipBeforeEveryPath = false; // dip the tool after every path
+float dipX = 0.0; // X dip coordinate
+float dipY = 0.0; // Y dip coordinate
+float dipZ = 0.0; // Z dip coordinate
+float dipApproach = -0.1; // Z dip approach coordinate
+
+boolean popUpBeforeStart = false; // after homing, popup window to wait for user input before starting
+boolean popUpBeforeEveryPath = false; // after homing, popup window to wait for user input before starting
+boolean loopProgram = false; // should the program keep looping or stop after finishing once
+
+boolean useOnlyCentroid = false; // follow individual paths or only punch down on path's centroid.
+boolean followPathVector = false; // TODO follow path's vector, can cause trouble if exceeding axis max rotation
+
+boolean useDigitalOutput = false; // output digital output commands to turn on/off some peripherals
+int digitalOutputId = 0; // digital output number
+
+float rapid_ms = 0.25; // rapid velocity to link between operations, similar to gcode G0 , meters/sec
+float feed_ms = 0.01; // feed velocity during process operations, similar to gcode G1, meters/sec
+float accel_mss = 0.2; // global acceleration/deceleration, meters/s2
+float blend_radius_m = 0.001; // global blending radius, meters
+
+float approach = -0.05; // approach above process start/stop, meters
+float processZ = 0.0; // how deep to go when processing a path
+
+String feature = "plane_1"; // feature plane from which to process, Installation Feature name
+
+String filename_in = "data/smiley.svg"; // SVG input filename, in the /data folder of the sketch
+String filename_out = "data/output.script"; // URScript output filename, in the /data folder of the sketch
+
+/* --------- DO NOT CHANGE AFTER THIS -------- */
+
+Post post;
 RShape grp;
 RPoint[][] pointPaths;
 
-float rescale = (25.4/72) / 1000; // scale factor from 72dpi to meters
-float dispscale = rescale * 1000; // display factor from meters to 1mm = 1 pixel
+float dpi_to_meter = (25.4/72) / 1000; // scale factor from 72 DPI to meters
+float meter_to_px = 1000; // display factor from meters to 1mm = 1 pixel
 boolean ignoringStyles = true;
 
 void setup(){
-  size(1000, 1000); // work area is 1m x 1m
+  size(1000, 1000); // display area is 1m x 1m
 
   RG.init(this);
   RG.ignoreStyles(ignoringStyles);
 
-  grp = RG.loadShape("smiley.svg");
+  grp = RG.loadShape(filename_in);
 
   RG.setPolygonizer(RG.ADAPTATIVE);
-  //RG.setPolygonizerAngle(PI/100);
+  // RG.setPolygonizerAngle(PI/100);
   // RG.setPolygonizerStep(20);
   // RG.setPolygonizerLength(20);
 
   pointPaths = grp.getPointsInPaths();
+  
+  post = new Post(filename_out);
 
   if (pointPaths == null) {
     println("There is a problem with the selected SVG file! Make sure the filename is correct or that the file is a valid SVG.");
@@ -32,26 +78,23 @@ void setup(){
 
 void draw(){
 
-  background(255);
+  background(127);
   noFill();
+  
+  // draw bounded surface
+  fill(255);
+  noStroke();
+  rect(minX*meter_to_px, minY*meter_to_px, (minX+maxX)*meter_to_px, (minY+maxY)*meter_to_px);
 
-  int lineCount = 0; // simple line counter to keep track of final file size
-
-  String p = "data/file.script";
-  ur = createWriter(p);
-
-  ur.println("def Print():\n" +
-    "  #set parameters\n" +
-    "  global rapid_ms = 0.25\n" + // 0.25m/s
-    "  global feed_ms = 0.01\n" + // 0.01m/s
-    "  global accel_ms = 0.25\n" + // 0.25m/ss
-    "  global blend_radius_m = 0.005\n" + // blend 5mm in corners to prevent stopping at each points
-    "  global approach = 0.03\n" + // approach every segment at 3cm above the Feature plane
-    "  global feature = felting_plane\n"); // execute all movements relative to this Feature plane
-  lineCount += 8;
-
-  ur.println("  movel(pose_trans(feature, p[0,0,-0.1,0,0,0]), rapid_ms, accel_ms, 0, 0)"); // start the path by going home to make sure we are well calibrated
-  ur.println("  sleep(2)"); // wait a bit just to give time in case of mistake
+  post.print("#set parameters");
+  post.print("global rapid_ms = " + rapid_ms);
+  post.print("global feed_ms = " + feed_ms);
+  post.print("global accel_ms = " + accel_mss);
+  post.print("global blend_radius_m = " + blend_radius_m);
+  post.print("global feature = " + feature);
+  
+  if (homeAtStart) post.movel(homeX, homeY, homeZ, 0);
+  if (popUpBeforeStart) post.popup("Start program?");
 
   stroke(0);
   noFill();
@@ -61,45 +104,82 @@ void draw(){
   for(int i = 0; i<pointPaths.length; i++){
 
     if (pointPaths[i] != null) {
-      beginShape();
-      // set digital output 1 to HIGH if we need to turn on some device (solenoid, valve, servo..)
-      ur.println("  set_standard_digital_out(1,True)");
-      // move above start of path
-      ur.println("  movel(pose_trans(feature, p["+pointPaths[i][0].x*rescale+","+pointPaths[i][0].y*rescale+",-approach,0,0,0]), accel_ms, rapid_ms, 0, blend_radius_m)");
-      lineCount+=2;
-
-      // draw starting point
-      vertex(pointPaths[i][0].x*dispscale, pointPaths[i][0].y*dispscale);
-      // draw circle to indicate start position
-      ellipse(pointPaths[i][pointPaths[i].length-1].x*dispscale, pointPaths[i][pointPaths[i].length-1].y*dispscale, 3, 3);
-
-      // loop through all points from path
-      for(int j = 0; j<pointPaths[i].length-1; j++){
-        // draw segment
-        vertex(pointPaths[i][j].x*dispscale, pointPaths[i][j].y*dispscale);
-        // go through point
-        ur.println("  movel(pose_trans(feature, p["+pointPaths[i][j].x*rescale+","+pointPaths[i][j].y*rescale+",0,0,0,0]), accel_ms, feed_ms, 0, blend_radius_m)");
-        lineCount++;
+      
+      if (popUpBeforeEveryPath) post.popup("Process next path?");
+      
+      float centerX = 0.0;
+      float centerY = 0.0;
+      
+      // dip tool
+      if (dipBeforeEveryPath) {
+        post.movel(dipX, dipY, dipZ, dipApproach);
+        post.movel(dipX, dipY, dipZ, 0);
+        post.movel(dipX, dipY, dipZ, dipApproach);
       }
+      
+      // move above start of path
+      if (!useOnlyCentroid) {
+        post.movel(pointPaths[i][0].x*dpi_to_meter, pointPaths[i][0].y*dpi_to_meter, approach);
+        
+        // start drawing path
+        beginShape(); 
+        // draw starting point
+        vertex(pointPaths[i][0].x*dpi_to_meter*meter_to_px, pointPaths[i][0].y*dpi_to_meter*meter_to_px);
+        // draw circle to indicate start position
+        ellipse(pointPaths[i][pointPaths[i].length-1].x*dpi_to_meter*meter_to_px, pointPaths[i][pointPaths[i].length-1].y*dpi_to_meter*meter_to_px, 3, 3);
+      }
+      
+      // set digital output 1 to HIGH if we need to turn on some device (solenoid, valve, servo..)
+      if (useDigitalOutput) post.setDO(digitalOutputId, true);
+      
+      // loop through all points from path
+      for(int j = 0; j<pointPaths[i].length; j++){
+        
+        if (!useOnlyCentroid) {
+          // draw segment
+          vertex(pointPaths[i][j].x*dpi_to_meter*meter_to_px, pointPaths[i][j].y*dpi_to_meter*meter_to_px);
+          // go through point
+          post.movel(pointPaths[i][j].x*dpi_to_meter, pointPaths[i][j].y*dpi_to_meter, processZ);
+        } else {
+          centerX += pointPaths[i][j].x*dpi_to_meter;
+          centerY += pointPaths[i][j].y*dpi_to_meter;
+        }
+      }
+      
+      if (!useOnlyCentroid) {
+        // move above last point
+        post.movel(pointPaths[i][pointPaths[i].length-1].x*dpi_to_meter, pointPaths[i][pointPaths[i].length-1].y*dpi_to_meter, approach);
 
-      // finish segment
-      endShape();
+        // finish segment
+        endShape();
+      
+      } else {
+        centerX /= pointPaths[i].length;
+        centerY /= pointPaths[i].length;
+        
+        post.movel(centerX, centerY, approach);
+        post.movel(centerX, centerY, processZ, 0);
+        post.movel(centerX, centerY, approach);
+        
+        ellipse(centerX * meter_to_px, centerY * meter_to_px, 5, 5);
+      }
+      
       // set digital output 1 to LOW to turn off whatever device might be plugged in
-      ur.println("  set_standard_digital_out(1,False)");
-      ur.println("  movel(pose_trans(feature, p["+pointPaths[i][pointPaths[i].length-1].x*rescale+","+pointPaths[i][pointPaths[i].length-1].y*rescale+",-approach,0,0,0]), accel_ms, rapid_ms, 0, blend_radius_m)");
-      lineCount+=2;
+      if (useDigitalOutput) post.setDO(digitalOutputId, false);
+     
+      // go above origin at the end of the file
+      if (homeAfterEveryPath) post.movel(homeX, homeY, homeZ, 0);
     }
   }
 
   // go above origin at the end of the file
-  ur.println("  movel(pose_trans(feature, p[0,0,-0.1,0,0,0]), accel_ms, rapid_ms, 0, 0)");
-  ur.println("end");
-  ur.println("Print()");
-  lineCount+=3;
+  if (homeAtEnd) post.movel(homeX, homeY, homeZ, 0);
+  
+  // should we keep looping or halt at the end?
+  if (!loopProgram) post.halt();
 
-  println("program line count: "+lineCount);
-  ur.flush();
-  ur.close();
+  println("program line count: "+post.getCount());
+  post.export();
 
   println("export successful!");
 
