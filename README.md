@@ -15,6 +15,10 @@ A simple Processing tool to import SVG files and export URscript code to control
 - Set the Speed Slider to a low value like 10% for testing
 - Press Play to run your program, pay attention to check that everything matches, offsets and orientation are correct.
 
+## This is not safety advice!
+
+Even if cobots like Universal Robots are sort-of-safe, be extremely wary when adding sharp, pointy tools, running at high speeds, etc. Stay out of reach of the robot, wear eye protection if necessary, etc. Always run the robot in Most Restricted safety mode if possible, use the speed slider to test programs and verify that everything is correct.
+
 ## Configurable options
 
 ### Bounds limit
@@ -94,20 +98,8 @@ Calibrate a Plane feature in the Installation tab of the robot, you can then ref
 `filename_in` SVG input filename in /data folder (default `smiley.svg`)  
 `filename_out` URScript output filename in /data (default `output.script`)
 
-## OLD README to cleanup
 
-- replace input/output filenames in sketch file, lines `19` and `41`
-- make sure you have a measured Feature Plane in the installation tab of the UR robot, with a known origin, use the same name in line `51` of the sketch for `feature` variable
-- run sketch
-- find exported UR script in `/data`
-- transfer exported file onto UR robot via USB key or FTP
-- create new Program with Script node, set it to File and select the loaded script file
-- Run the program with 10% speed override to make sure everything is fine
-
-### ONLY PLAY PROGRAM FULLSPEED IF YOU ARE SURE OF WHAT YOU ARE DOING!
-### NEVER CHANGE THE SPEED SETTINGS IF YOU ARE NOT SURE OF WHAT YOU ARE DOING!
-
-## TODO
+## OLD TODO
 
 - add CP5 to build GUI
   - File select
