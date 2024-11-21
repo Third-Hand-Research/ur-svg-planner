@@ -200,6 +200,9 @@ void draw(){
 
   println("program line count: "+post.getCount());
   post.export();
+  
+  fill(0);
+  text("Program line number: "+post.getCount(), 20, 30);
 
   println("export successful!");
 
