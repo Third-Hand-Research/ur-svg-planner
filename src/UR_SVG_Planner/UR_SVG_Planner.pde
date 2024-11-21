@@ -16,8 +16,8 @@ float maxY = 1.0; // maximum Y is 0.5m
 float minZ = -0.1; // minimum Y is 0m
 float maxZ = 0.1; // maximum Y is 0.5m
 
-boolean homeAtStart = true; // send the tool to the home position on program start, useful to verify tool alignment against a reference
-boolean homeAtEnd = true; // send the tool to the home position on program end
+boolean homeOnStart = true; // send the tool to the home position on program start, useful to verify tool alignment against a reference
+boolean homeOnEnd = true; // send the tool to the home position on program end
 boolean homeAfterEveryPath = false; // go home after each path
 float homeX = 0.0; // X home coordinate
 float homeY = 0.0; // Y home coordinate
@@ -108,7 +108,7 @@ void draw(){
   post.print("global feature = " + feature);
   
   // home at start
-  if (homeAtStart) post.movel(homeX, homeY, homeZ, 0);
+  if (homeOnStart) post.movel(homeX, homeY, homeZ, 0);
   
   // popup at start
   if (popUpBeforeStart) post.popup("Start program?");
@@ -200,7 +200,7 @@ void draw(){
   }
 
   // go home at end of file
-  if (homeAtEnd) post.movel(homeX, homeY, homeZ, 0);
+  if (homeOnEnd) post.movel(homeX, homeY, homeZ, 0);
   
   // should we keep looping or halt at the end?
   if (!loopProgram) post.halt();

@@ -17,10 +17,10 @@ For safety, no coordinates will be exported out of this bounding volume, configu
 
 ### Homing
 
-The robot can move to a Home position at various moments, for example if you have a mark at known coordinates on your work surface, you can use it to align a tool or verify that it is properly aligned and at the correct height, when using a magic arm to hold a tool.
+The robot can move to a Home position at various moments, for example if you have a mark at known coordinates on your work surface, you can use it to align a tool or verify that it is properly aligned and at the correct height, when using a magic arm to hold a tool for example.
 
-`homeAtStart` go home on program start (default `true`)  
-`homeAtEnd` go home on program end (default `true`)  
+`homeOnStart` go home on program start (default `true`)  
+`homeOnEnd` go home on program end (default `true`)  
 `homeAfterEveryPath` go home after every path processed (default `false`)  
 `homeX` home X coordinate, meter (default: `0.0`)  
 `homeY` home Y coordinate, meter (default: `0.0`)  
