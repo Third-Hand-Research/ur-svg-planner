@@ -2,6 +2,19 @@
 
 A simple Processing tool to import SVG files and export URscript code to control Universal Robots.
 
+## How-To
+
+- Create an SVG file with artboard top-left origin at 0x0m, with width/height 1x1m. Check the file `smiley.svg` for example.
+- On the robot, properly setup the TCP translation/orientation offsets. If using the graphics convention of the origin top-left of drawing, with positive X axis going right, and positive Y axis going down, you must have the Z axis of the TCP pointing away of the tool flange.
+- Measure a Plane feature in the Installation tab, so that you have your workspace has its origin top-right, positive X axis to the right and positive Y axis to the bottom. The positive Z axis will point towards the work surface, with negative Z going up in the air. This is just to follow SVG/graphics convention with positive Y axis going down. If you prefer a more conventional orientation with your origin bottom-left of your work surface, with positive X axis going right and positive Y axis going up, with positive Z axis going away of the work surface, you must mirror and offset your SVG file to match the inverted coordinate systems, and invert your TCP Z axis to point towards the robot tool flange.
+- Configure the various settings, default works well for simple path tracing with a pen.
+- Place your SVG file in the `/data` folder, adjust `filename_in` and `filename_out` variables.
+- Run the sketch, you will have a file with .script extension in the `/data` folder.
+- Place this file on a USB key, insert it in the robot Teach Pendant.
+- Create an empty program, add a `Code Script` block, select File instead of Line, navigate and open your file on the USB drive.
+- Set the Speed Slider to a low value like 10% for testing
+- Press Play to run your program, pay attention to check that everything matches, offsets and orientation are correct.
+
 ## Configurable options
 
 ### Bounds limit
@@ -80,7 +93,6 @@ Calibrate a Plane feature in the Installation tab of the robot, you can then ref
 ### Filenames
 `filename_in` SVG input filename in /data folder (default `smiley.svg`)  
 `filename_out` URScript output filename in /data (default `output.script`)
-
 
 ## OLD README to cleanup
 
