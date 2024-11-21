@@ -63,15 +63,19 @@ void setup(){
 
   grp = RG.loadShape(filename_in);
 
+  // polygonizer settings, change if needed
   RG.setPolygonizer(RG.ADAPTATIVE);
   // RG.setPolygonizerAngle(PI/100);
   // RG.setPolygonizerStep(20);
   // RG.setPolygonizerLength(20);
 
+  // convert 2D array, a list of list of XY points, one list per SVG path
   pointPaths = grp.getPointsInPaths();
   
+  // instantiate post processor with output filename
   post = new Post(filename_out);
 
+  // if nothing in polygonized file, error out
   if (pointPaths == null) {
     println("There is a problem with the selected SVG file! Make sure the filename is correct or that the file is a valid SVG.");
     exit();
@@ -88,6 +92,7 @@ void draw(){
   noStroke();
   rect(minX*meter_to_px, minY*meter_to_px, (minX+maxX)*meter_to_px, (minY+maxY)*meter_to_px);
 
+  // setup config variables
   post.print("#set parameters");
   post.print("global rapid_ms = " + rapid_ms);
   post.print("global feed_ms = " + feed_ms);
@@ -95,20 +100,26 @@ void draw(){
   post.print("global blend_radius_m = " + blend_radius_m);
   post.print("global feature = " + feature);
   
+  // home at start
   if (homeAtStart) post.movel(homeX, homeY, homeZ, 0);
+  
+  // popup at start
   if (popUpBeforeStart) post.popup("Start program?");
 
   stroke(0);
   noFill();
   beginShape();
 
-  // loop through all paths of the SVG
+  // loop through all paths of the polygonized SVG
   for(int i = 0; i<pointPaths.length; i++){
 
+    // check if path is valid
     if (pointPaths[i] != null) {
       
+      // popup before continuing
       if (popUpBeforeEveryPath) post.popup("Process next path?");
       
+      // containers for centroid calculation
       float centerX = 0.0;
       float centerY = 0.0;
       
@@ -119,7 +130,7 @@ void draw(){
         post.movel(dipX, dipY, dipApproach);
       }
       
-      // move above start of path
+      // if not using centroid, move above start of path
       if (!useOnlyCentroid) {
         post.movel(pointPaths[i][0].x*dpi_to_meter, pointPaths[i][0].y*dpi_to_meter, approach);
         
@@ -131,7 +142,7 @@ void draw(){
         ellipse(pointPaths[i][pointPaths[i].length-1].x*dpi_to_meter*meter_to_px, pointPaths[i][pointPaths[i].length-1].y*dpi_to_meter*meter_to_px, 3, 3);
       }
       
-      // set digital output 1 to HIGH if we need to turn on some device (solenoid, valve, servo..)
+      // set digital output HIGH if we need to turn on some device (solenoid, valve, servo, motor, light..)
       if (useDigitalOutput) post.setDO(digitalOutputId, true);
       
       // loop through all points from path
@@ -143,38 +154,45 @@ void draw(){
           // go through point
           post.movel(pointPaths[i][j].x*dpi_to_meter, pointPaths[i][j].y*dpi_to_meter, processZ);
         } else {
+          // if using centroid, add up each path point to compute center
           centerX += pointPaths[i][j].x*dpi_to_meter;
           centerY += pointPaths[i][j].y*dpi_to_meter;
         }
       }
       
+      // if not using center, move above last point
       if (!useOnlyCentroid) {
+        
         // move above last point
         post.movel(pointPaths[i][pointPaths[i].length-1].x*dpi_to_meter, pointPaths[i][pointPaths[i].length-1].y*dpi_to_meter, approach);
 
         // finish segment
         endShape();
-      
+        
       } else {
+        
+        // if using centroid, compute center
         centerX /= pointPaths[i].length;
         centerY /= pointPaths[i].length;
         
+        // go above center, down and up
         post.movel(centerX, centerY, approach);
         post.movel(centerX, centerY, processZ, 0);
         post.movel(centerX, centerY, approach);
         
+        // display centroid
         ellipse(centerX * meter_to_px, centerY * meter_to_px, 5, 5);
       }
       
-      // set digital output 1 to LOW to turn off whatever device might be plugged in
+      // set digital output LOW to turn off whatever device is used
       if (useDigitalOutput) post.setDO(digitalOutputId, false);
      
-      // go above origin at the end of the file
+      // go home after processing each path
       if (homeAfterEveryPath) post.movel(homeX, homeY, homeZ, 0);
     }
   }
 
-  // go above origin at the end of the file
+  // go home at end of file
   if (homeAtEnd) post.movel(homeX, homeY, homeZ, 0);
   
   // should we keep looping or halt at the end?
