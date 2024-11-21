@@ -6,6 +6,8 @@ float minX = 0.0; // minimum X is 0m
 float maxX = 1.0; // maximum X is 0.5m
 float minY = 0.0; // minimum Y is 0m
 float maxY = 1.0; // maximum Y is 0.5m
+float minZ = -0.1; // minimum Y is 0m
+float maxZ = 0.1; // maximum Y is 0.5m
 
 boolean homeAtStart = true; // send the tool to the home position on program start, useful to verify tool alignment against a reference
 boolean homeAtEnd = true; // send the tool to the home position on program end
@@ -112,9 +114,9 @@ void draw(){
       
       // dip tool
       if (dipBeforeEveryPath) {
-        post.movel(dipX, dipY, dipZ, dipApproach);
+        post.movel(dipX, dipY, dipApproach);
         post.movel(dipX, dipY, dipZ, 0);
-        post.movel(dipX, dipY, dipZ, dipApproach);
+        post.movel(dipX, dipY, dipApproach);
       }
       
       // move above start of path
