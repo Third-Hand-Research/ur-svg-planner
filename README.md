@@ -1,6 +1,6 @@
 # UR SVG Planner
 
-A simple Processing tool to import SVG files and export URscript code to control Universal Robots.
+A simple [Processing](https://processing.org/) tool to import SVG files and export URscript code to control Universal Robots.
 
 ## How-To
 
@@ -90,7 +90,7 @@ Set tool velocities and acceleration here.
 
 ### Feature
 
-Calibrate a Plane feature in the Installation tab of the robot, you can then reference it here so that your file is processed with it's coordinates relative to this feature. If using screen conventions with X positive to the right and Y positive going down, Z axis will be negative when moving away of the work surface and positive to go into the work surface.
+Calibrate a Plane feature in the Installation tab of the robot, you can then reference it here so that your file is processed with its coordinates relative to this feature. If using screen conventions with X positive to the right and Y positive going down, Z axis will be negative when moving away of the work surface and positive to go into the work surface.
 
 `feature` installation feature name to move relative to (default `plane_1`)
 
