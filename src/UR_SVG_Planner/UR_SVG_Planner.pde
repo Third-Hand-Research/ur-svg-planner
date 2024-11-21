@@ -42,8 +42,8 @@ float processZ = 0.0; // how deep to go when processing a path
 
 String feature = "plane_1"; // feature plane from which to process, Installation Feature name
 
-String filename_in = "data/smiley.svg"; // SVG input filename, in the /data folder of the sketch
-String filename_out = "data/output.script"; // URScript output filename, in the /data folder of the sketch
+String filename_in = "smiley.svg"; // SVG input filename, in the /data folder of the sketch
+String filename_out = "output.script"; // URScript output filename, in the /data folder of the sketch
 
 /* --------- DO NOT CHANGE AFTER THIS -------- */
 
@@ -61,7 +61,7 @@ void setup(){
   RG.init(this);
   RG.ignoreStyles(ignoringStyles);
 
-  grp = RG.loadShape(filename_in);
+  grp = RG.loadShape("data/"+filename_in);
 
   // polygonizer settings, change if needed
   RG.setPolygonizer(RG.ADAPTATIVE);

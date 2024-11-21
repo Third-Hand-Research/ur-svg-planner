@@ -3,7 +3,7 @@ class Post {
   int count = 0;
   
   Post(String filename){
-    ur = createWriter(filename);
+    ur = createWriter("data/"+filename);
   }
   
   void print(String cmd){
