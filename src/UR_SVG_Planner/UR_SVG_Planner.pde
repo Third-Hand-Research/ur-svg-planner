@@ -1,3 +1,10 @@
+/*
+    UR SVG Planner
+    A Simple Processing tool to use SVG files to control Universal Robots.
+
+    © AATB GmbH, Thibault Brevet. 2017-2024
+*/
+
 import geomerative.*;
 
 /* --------- CONFIG --------- */
