@@ -1,5 +1,7 @@
 # UR SVG Planner
 
+![UR SVG Planner image](cover.png)  
+
 A simple [Processing](https://processing.org/) tool to import SVG files and export URscript code to control Universal Robots.
 
 ## How-To
