@@ -69,7 +69,7 @@ If using tools such as needles or only making dots, enable `useOnlyCentroid` to 
 
 `displayOrder` display path order, if order is important, it is the reversed order of the SVG path elements (default `true`)  
 `useOnlyCentroid` disable path following, enable pure vertical move, for example when punching holes with needles or making dots with a pen. Will use the XY centroid coordinate of each path (default `false`)  
-`followPathVector` TODO follow path`s vector to orient tool in direction of motion, can cause trouble if exceeding axis max rotation (2 turns on axis 6 of a UR5/10, unlimited rotation on axis 6 of UR3)
+`followPathVector` TODO follow path's vector to orient tool in direction of motion, can cause trouble if exceeding axis max rotation (2 turns on axis 6 of a UR5/10, unlimited rotation on axis 6 of UR3)
 
 ### Digital Output
 
