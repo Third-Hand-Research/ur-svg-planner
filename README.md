@@ -57,7 +57,7 @@ If using paint or inks with a tool, the program can allow the robot to go dip th
 
 You can set optional popups that will pause the program at the start, or before processing each path, in case you need to pause the program automatically before continuing. Use `popUpBeforeEveryPath` in conjunction with `homeAfterEveryPath` if you desire the robot to move away of the work surface if you need to do anything between paths.
 
-`popUpBeforeStart` display a popup before starting the program (default `false`)  
+`popUpBeforeStart` display a popup before starting the program (default `true`)  
 `popUpBeforeEveryPath` display a popup before processing every path (default `false`)  
 `loopProgram` loop program when finished (default `false`)
 
@@ -96,7 +96,7 @@ Calibrate a Plane feature in the Installation tab of the robot, you can then ref
 
 ### Filenames
 `filename_in` SVG input filename in /data folder (default `smiley.svg`)  
-`filename_out` URScript output filename in /data (default `output.script`)
+`filename_out` URScript output filename in /data (default `smiley.script`)
 
 
 ## OLD TODO

@@ -29,7 +29,7 @@ float dipY = 0.0; // Y dip coordinate
 float dipZ = 0.0; // Z dip coordinate
 float dipApproach = -0.1; // Z dip approach coordinate
 
-boolean popUpBeforeStart = false; // after homing, popup window to wait for user input before starting
+boolean popUpBeforeStart = true; // after homing, popup window to wait for user input before starting
 boolean popUpBeforeEveryPath = false; // after homing, popup window to wait for user input before starting
 boolean loopProgram = false; // should the program keep looping or stop after finishing once
 
@@ -50,7 +50,7 @@ float processZ = 0.0; // how deep to go when processing a path
 String feature = "plane_1"; // feature plane from which to process, Installation Feature name
 
 String filename_in = "smiley.svg"; // SVG input filename, in the /data folder of the sketch
-String filename_out = "output.script"; // URScript output filename, in the /data folder of the sketch
+String filename_out = "smiley.script"; // URScript output filename, in the /data folder of the sketch
 
 /* --------- DO NOT CHANGE AFTER THIS -------- */
 

@@ -63,12 +63,12 @@ class Post {
   }
   
   void popup(String message){
-    ur.println("popup(\""+message+"\", title=\"UR SVG Planner Popup\" blocking=True)");
+    ur.println("popup(\""+message+"\", title=\"UR SVG Planner Popup\", blocking=True)");
     count++;
   }
   
   void halt(){
-    ur.println("halt()");
+    ur.println("halt");
     count++;
   }
   
