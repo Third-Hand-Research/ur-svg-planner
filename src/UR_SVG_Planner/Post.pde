@@ -20,11 +20,10 @@ class Post {
   }
   
   void movel(float x, float y, float z){
-    
-    if (!checkBounds(x, minX, maxX) || !checkBounds(y, minY, maxY) || !checkBounds(z, minZ, maxZ)) {
-      println("Coordinate is out of bounds!");
-      return;
-    }
+
+    checkBounds(x, minX, maxX);
+    checkBounds(y, minY, maxY);    
+    checkBounds(z, minZ, maxZ);
     
     ur.println("movel(pose_trans(feature, p["+x+","+y+","+z+",0,0,0]), rapid_ms, accel_ms, 0, blend_radius_m)");
     count++;
@@ -32,10 +31,9 @@ class Post {
   
   void movel(float x, float y, float z, float b){
     
-    if (!checkBounds(x, minX, maxX) || !checkBounds(y, minY, maxY) || !checkBounds(z, minZ, maxZ)) {
-      println("Coordinate is out of bounds!");
-      return;
-    }
+    checkBounds(x, minX, maxX);
+    checkBounds(y, minY, maxY);    
+    checkBounds(z, minZ, maxZ);
     
     ur.println("movel(pose_trans(feature, p["+x+","+y+","+z+",0,0,0]), rapid_ms, accel_ms, 0, "+b+")");
     count++;
@@ -43,10 +41,9 @@ class Post {
   
   void movel(float x, float y, float z, float rx, float ry, float rz, float b){
     
-    if (!checkBounds(x, minX, maxX) || !checkBounds(y, minY, maxY) || !checkBounds(z, minZ, maxZ)) {
-      println("Coordinate is out of bounds!");
-      return;
-    }
+    checkBounds(x, minX, maxX);
+    checkBounds(y, minY, maxY);    
+    checkBounds(z, minZ, maxZ);
     
     ur.println("movel(pose_trans(feature, p["+x+","+y+","+z+","+rx+","+ry+","+rz+"]), rapid_ms, accel_ms, 0, "+b+")");
     count++;
