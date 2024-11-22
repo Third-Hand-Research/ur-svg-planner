@@ -33,6 +33,7 @@ boolean popUpBeforeStart = true; // after homing, popup window to wait for user 
 boolean popUpBeforeEveryPath = false; // after homing, popup window to wait for user input before starting
 boolean loopProgram = false; // should the program keep looping or stop after finishing once
 
+boolean displayOrder = true; // display path order, if order is important, it is the reversed order of the SVG path elements.
 boolean useOnlyCentroid = false; // follow individual paths or only punch down on path's centroid.
 boolean followPathVector = false; // TODO follow path's vector, can cause trouble if exceeding axis max rotation
 
@@ -44,7 +45,7 @@ float feed_ms = 0.01; // feed velocity during process operations, similar to gco
 float accel_mss = 0.2; // global acceleration/deceleration, meters/s2
 float blend_radius_m = 0.001; // global blending radius, meters
 
-float approach = -0.05; // approach above process start/stop, meters
+float approach = -0.1; // approach above process start/stop, meters
 float processZ = 0.0; // how deep to go when processing a path
 
 String feature = "plane_1"; // feature plane from which to process, Installation Feature name
@@ -146,7 +147,12 @@ void draw(){
         // draw starting point
         vertex(pointPaths[i][0].x*dpi_to_meter*meter_to_px, pointPaths[i][0].y*dpi_to_meter*meter_to_px);
         // draw circle to indicate start position
-        ellipse(pointPaths[i][pointPaths[i].length-1].x*dpi_to_meter*meter_to_px, pointPaths[i][pointPaths[i].length-1].y*dpi_to_meter*meter_to_px, 3, 3);
+        noStroke();
+        fill(0,255,0);
+        ellipse(pointPaths[i][0].x*dpi_to_meter*meter_to_px, pointPaths[i][0].y*dpi_to_meter*meter_to_px, 5, 5);
+        
+        fill(0,0,255);
+        if (displayOrder) text(i, pointPaths[i][0].x*dpi_to_meter*meter_to_px + 5, pointPaths[i][0].y*dpi_to_meter*meter_to_px - 5);
       }
       
       // set digital output HIGH if we need to turn on some device (solenoid, valve, servo, motor, light..)
@@ -172,8 +178,14 @@ void draw(){
         
         // move above last point
         post.movel(pointPaths[i][pointPaths[i].length-1].x*dpi_to_meter, pointPaths[i][pointPaths[i].length-1].y*dpi_to_meter, approach);
+        
+        noStroke();
+        fill(255,0,0);
+        ellipse(pointPaths[i][pointPaths[i].length-1].x*dpi_to_meter*meter_to_px, pointPaths[i][pointPaths[i].length-1].y*dpi_to_meter*meter_to_px, 5, 5);
 
         // finish segment
+        noFill();
+        stroke(0);
         endShape();
         
       } else {
@@ -188,7 +200,12 @@ void draw(){
         post.movel(centerX, centerY, approach);
         
         // display centroid
+        noStroke();
+        fill(0,255,0);
         ellipse(centerX * meter_to_px, centerY * meter_to_px, 5, 5);
+        
+        fill(0,0,255);
+        if (displayOrder) text(i, centerX * meter_to_px + 5, centerY * meter_to_px - 5);
       }
       
       // set digital output LOW to turn off whatever device is used
